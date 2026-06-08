@@ -343,7 +343,7 @@ export const TRANSLATIONS: Record<string, SiteContent> = {
       { t: "8. Cambios de Política", c: ["Te notificamos por email sobre cambios importantes."] },
     ],
     privacyFooter: "Aceptas esta política al usar CMOR Protocol.",
-    privacyContact: "Contacto: privacidad@cmorprotocol.cl",
+    privacyContact: "Contacto: privacidad@cmorprotocol.com",
     ctaSection: {
       title: "Tu primer agente puede estar funcionando en 7 días",
       subtitle: "Consulta gratuita. Sin compromiso.",
@@ -636,7 +636,7 @@ export const TRANSLATIONS: Record<string, SiteContent> = {
       { t: "8. Policy Changes", c: ["We notify you by email about important changes."] },
     ],
     privacyFooter: "You accept this policy by using CMOR Protocol.",
-    privacyContact: "Contact: privacy@cmorprotocol.cl",
+    privacyContact: "Contact: privacy@cmorprotocol.com",
     ctaSection: {
       title: "Your first agent can be running in 7 days",
       subtitle: "Free consultation. No commitment.",

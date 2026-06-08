@@ -22,12 +22,12 @@ export const metadata: Metadata = {
     "automatización",
     "CRM",
     "chatbot inteligente",
-    "IA Chile",
+    "IA empresa",
     "CMOR Protocol",
   ],
   authors: [{ name: "CMOR Protocol" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/logo.svg",
   },
   openGraph: {
     title: "CMOR Protocol — Agentes de IA Autónomos",

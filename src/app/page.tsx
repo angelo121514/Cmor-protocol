@@ -256,8 +256,8 @@ export default function Home() {
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             {lang === "es"
-              ? "Agentes de IA para empresas chilenas"
-              : "AI Agents for Chilean businesses"}
+              ? "Agentes de IA que trabajan por ti"
+              : "AI Agents that work for you"}
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.08] mb-6">
