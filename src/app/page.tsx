@@ -100,7 +100,7 @@ export default function Home() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -109,7 +109,7 @@ export default function Home() {
             <img
               src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-12 md:h-14 w-auto ${
+              className={`h-16 md:h-20 w-auto ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
@@ -484,7 +484,7 @@ export default function Home() {
             <img
               src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-16 w-auto mb-2 ${
+              className={`h-24 w-auto mb-3 ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
