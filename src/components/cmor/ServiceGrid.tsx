@@ -11,6 +11,8 @@ import {
   Zap,
 } from "lucide-react";
 import Image from "next/image";
+import N8NPanel from "./N8NPanel";
+import WhatsAppPanel from "./WhatsAppPanel";
 
 interface ServiceGridProps {
   services: ServiceCategory[];
@@ -365,6 +367,14 @@ export function DetailModal({ detail, category, isDark, lang, onClose }: DetailM
               </div>
             </div>
           </div>
+
+          {(detail.title.toLowerCase().includes('n8n') || detail.title.toLowerCase().includes('api')) && (
+            <N8NPanel lang={lang} isDarkMode={isDark} />
+          )}
+
+          {(detail.title.toLowerCase().includes('whatsapp') || detail.title.toLowerCase().includes('chatbots') || detail.title.toLowerCase().includes('embudos')) && (
+            <WhatsAppPanel lang={lang} isDarkMode={isDark} />
+          )}
         </div>
 
         {/* Footer */}
@@ -374,7 +384,7 @@ export function DetailModal({ detail, category, isDark, lang, onClose }: DetailM
           }`}
         >
           <a
-            href="https://wa.me/56956249647?text=Hola,%20me%20interesa%20el%20servicio%20de%20IA"
+            href="https://wa.me/56926942853?text=Hola,%20me%20interesa%20el%20servicio%20de%20IA"
             target="_blank"
             rel="noopener noreferrer"
             className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-bold text-base transition-all duration-300 hover:shadow-lg active:scale-[0.98] ${

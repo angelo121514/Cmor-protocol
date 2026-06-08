@@ -357,7 +357,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <a
-              href="https://wa.me/56956249647?text=Hola,%20me%20interesa%20implementar%20agentes%20de%20IA%20en%20mi%20empresa"
+              href="https://wa.me/56926942853?text=Hola,%20me%20interesa%20implementar%20agentes%20de%20IA%20en%20mi%20empresa"
               target="_blank"
               rel="noopener noreferrer"
               className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition-all duration-300 hover:shadow-xl active:scale-[0.98] ${
