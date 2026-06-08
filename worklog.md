@@ -103,3 +103,42 @@ Stage Summary:
 - Two particle modes now available: "Sinapsis" (Synapse - network/connections) and "Enjambre" (Antigravity/Swarm - colorful attract)
 - Toggle button in navbar with visual feedback
 - Screenshots saved to /home/z/my-project/download/
+
+---
+Task ID: 2
+Agent: Super Z (main)
+Task: Rewrite AntigravityCanvas to faithfully replicate antigravity.google swarm effect
+
+Work Log:
+- Analyzed antigravity.google WebGL shaders in detail using agent-browser eval
+- Key findings from shader code:
+  - Uses Three.js with WebGL + custom ShaderMaterial
+  - Particles are PILL/CAPSULE shapes (sdRoundBox in fragment shader), not circles
+  - 3-color gradient mixing via simplex noise (uColor1, uColor2, uColor3)
+  - Particles ROTATE to face the mouse cursor (angle = atan to ringPos)
+  - Velocity modulates brightness (vVelocity)
+  - Position stored in texture (uPosition) with velocity and scale in .w and .z
+  - Point size varies by scale: gl_PointSize = vScale * 7 * pixelRatio * particleScale
+- Rewrote AntigravityCanvas.tsx completely:
+  - Added simplex 2D noise implementation for organic color mixing
+  - Particles are now PILL/CAPSULE shapes drawn with rounded rectangles (not circles)
+  - 3-color gradient mixing per particle using noise (emerald→cyan→lime, teal→emerald→green, etc.)
+  - Particles ROTATE toward the mouse cursor (smooth interpolation)
+  - Swarm behavior: particles FOLLOW the mouse with tangential orbit force (swirling)
+  - Repel when very close (<25px), attract at medium range, strong swirl at orbit distance
+  - Velocity modulates particle brightness (faster = brighter)
+  - Size increases slightly when near mouse
+  - 5 palette groups mixing 3 colors each for variety
+  - No connection lines (matching antigravity.google - no connections between particles)
+- Removed: glow effect, connection lines, circular particles, static colors
+- Added: pill shapes, noise-based gradient colors, rotation toward mouse, tangential orbit
+- Verified with Agent Browser: both modes work, no errors in light/dark
+
+Stage Summary:
+- AntigravityCanvas now faithfully replicates the antigravity.google swarm:
+  - Pill-shaped particles (not circles)
+  - Follow mouse as a swarm (attract + tangential orbit)
+  - Noise-based 3-color gradient per particle
+  - Particles rotate to face mouse
+  - Velocity modulates brightness
+  - No connection lines between particles
