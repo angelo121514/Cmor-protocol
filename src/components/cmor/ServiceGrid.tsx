@@ -10,6 +10,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 
 interface ServiceGridProps {
   services: ServiceCategory[];
@@ -41,47 +42,53 @@ function ServiceCard({
   isDark: boolean;
   onOpenDetail: (detail: ServiceCategory["details"][0], category: ServiceCategory) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <div
-      className={`group relative rounded-2xl border p-6 lg:p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl cursor-default ${
+      className={`group relative rounded-2xl border overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl cursor-default ${
         isDark
           ? "bg-white/[0.03] border-white/10 hover:border-emerald-500/30 hover:shadow-emerald-900/20"
           : "bg-white border-gray-200 hover:border-emerald-300 hover:shadow-emerald-100/60"
       }`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
-      {/* Gradient overlay on hover */}
-      <div
-        className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${service.gradient} opacity-0 transition-opacity duration-500 ${
-          hovered ? "opacity-[0.06]" : ""
-        }`}
-      />
-
-      <div className="relative z-10">
-        {/* Icon */}
+      {/* Service Image */}
+      <div className="relative w-full h-44 overflow-hidden">
+        <Image
+          src={service.image}
+          alt={service.title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+        {/* Gradient overlay on image */}
         <div
-          className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${
+          className={`absolute inset-0 bg-gradient-to-t ${
             isDark
-              ? "bg-emerald-500/10 border border-emerald-500/20"
-              : "bg-emerald-50 border border-emerald-200"
+              ? "from-[#0a0a0b] via-[#0a0a0b]/60 to-transparent"
+              : "from-white via-white/60 to-transparent"
+          }`}
+        />
+        {/* Icon badge on image */}
+        <div
+          className={`absolute bottom-3 left-4 w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 ${
+            isDark
+              ? "bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-sm"
+              : "bg-white/90 border border-emerald-200 shadow-sm backdrop-blur-sm"
           }`}
         >
           <DynamicIcon
             name={service.icon}
-            className={`w-7 h-7 transition-colors duration-300 ${
-              isDark
-                ? "text-emerald-400 group-hover:text-emerald-300"
-                : "text-emerald-600 group-hover:text-emerald-700"
+            className={`w-5 h-5 ${
+              isDark ? "text-emerald-400" : "text-emerald-600"
             }`}
           />
         </div>
+      </div>
 
+      {/* Content */}
+      <div className="p-5 lg:p-6">
         {/* Title */}
         <h3
-          className={`text-xl font-bold mb-3 tracking-tight leading-snug ${
+          className={`text-lg font-bold mb-2 tracking-tight leading-snug ${
             isDark ? "text-white" : "text-gray-900"
           }`}
         >
@@ -90,7 +97,7 @@ function ServiceCard({
 
         {/* Description */}
         <p
-          className={`text-sm leading-relaxed mb-6 ${
+          className={`text-sm leading-relaxed mb-5 ${
             isDark ? "text-gray-400" : "text-gray-600"
           }`}
         >
@@ -98,19 +105,19 @@ function ServiceCard({
         </p>
 
         {/* Sub-services */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           {service.details.map((detail) => (
             <button
               key={detail.id}
               onClick={() => onOpenDetail(detail, service)}
-              className={`w-full text-left flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group/sub hover:translate-x-1 ${
+              className={`w-full text-left flex items-center gap-3 p-2.5 rounded-lg transition-all duration-300 group/sub hover:translate-x-1 ${
                 isDark
                   ? "bg-white/[0.03] hover:bg-white/[0.07] border border-white/5 hover:border-white/10"
                   : "bg-gray-50 hover:bg-gray-100 border border-gray-100 hover:border-gray-200"
               }`}
             >
               <div
-                className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover/sub:scale-110 ${
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover/sub:scale-110 ${
                   isDark
                     ? "bg-emerald-500/10 border border-emerald-500/20"
                     : "bg-emerald-50 border border-emerald-200"
@@ -118,7 +125,7 @@ function ServiceCard({
               >
                 <DynamicIcon
                   name={detail.icon}
-                  className={`w-4 h-4 ${
+                  className={`w-3.5 h-3.5 ${
                     isDark ? "text-emerald-400" : "text-emerald-600"
                   }`}
                 />
@@ -131,7 +138,7 @@ function ServiceCard({
                 {detail.title}
               </span>
               <ChevronRight
-                className={`w-4 h-4 transition-transform duration-300 group-hover/sub:translate-x-1 ${
+                className={`w-3.5 h-3.5 transition-transform duration-300 group-hover/sub:translate-x-1 ${
                   isDark ? "text-gray-500" : "text-gray-400"
                 }`}
               />
@@ -141,7 +148,7 @@ function ServiceCard({
 
         {/* Target clients */}
         <div
-          className={`flex items-center gap-2 mt-5 text-xs font-medium ${
+          className={`flex items-center gap-2 mt-4 text-xs font-medium ${
             isDark ? "text-gray-500" : "text-gray-400"
           }`}
         >
@@ -179,45 +186,103 @@ export function DetailModal({ detail, category, isDark, lang, onClose }: DetailM
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div
-          className={`p-6 md:p-8 border-b flex items-start gap-5 ${
-            isDark ? "border-white/10" : "border-gray-100"
-          }`}
-        >
-          <div
-            className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br ${category.gradient}`}
-          >
-            <DynamicIcon name={detail.icon} className="w-7 h-7 text-white" />
-          </div>
-          <div className="flex-1 min-w-0">
+        {/* Image Header */}
+        {category.image && (
+          <div className="relative w-full h-48 md:h-56 overflow-hidden">
+            <Image
+              src={category.image}
+              alt={category.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
             <div
-              className={`text-xs font-semibold uppercase tracking-widest mb-2 ${
-                isDark ? "text-emerald-400" : "text-emerald-600"
+              className={`absolute inset-0 bg-gradient-to-t ${
+                isDark
+                  ? "from-[#141414] via-[#141414]/70 to-transparent"
+                  : "from-white via-white/70 to-transparent"
               }`}
+            />
+            {/* Close button on image */}
+            <button
+              onClick={onClose}
+              className={`absolute top-4 right-4 p-2 rounded-lg transition-colors backdrop-blur-sm ${
+                isDark
+                  ? "hover:bg-white/10 text-white/70 hover:text-white"
+                  : "hover:bg-black/10 text-black/50 hover:text-black"
+              }`}
+              aria-label={lang === "es" ? "Cerrar" : "Close"}
             >
-              {category.title}
+              <X className="w-5 h-5" />
+            </button>
+            {/* Icon + category on image */}
+            <div className="absolute bottom-4 left-6 flex items-center gap-3">
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${category.gradient} shadow-lg`}
+              >
+                <DynamicIcon name={detail.icon} className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div
+                  className={`text-xs font-semibold uppercase tracking-widest ${
+                    isDark ? "text-emerald-400" : "text-emerald-600"
+                  }`}
+                >
+                  {category.title}
+                </div>
+                <h2
+                  className={`text-xl md:text-2xl font-bold tracking-tight leading-tight ${
+                    isDark ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  {detail.title}
+                </h2>
+              </div>
             </div>
-            <h2
-              className={`text-2xl md:text-3xl font-bold tracking-tight leading-tight ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
-              {detail.title}
-            </h2>
           </div>
-          <button
-            onClick={onClose}
-            className={`p-2 rounded-lg transition-colors shrink-0 ${
-              isDark
-                ? "hover:bg-white/10 text-gray-400"
-                : "hover:bg-gray-100 text-gray-500"
+        )}
+
+        {/* Fallback header if no image */}
+        {!category.image && (
+          <div
+            className={`p-6 md:p-8 border-b flex items-start gap-5 ${
+              isDark ? "border-white/10" : "border-gray-100"
             }`}
-            aria-label={lang === "es" ? "Cerrar" : "Close"}
           >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+            <div
+              className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br ${category.gradient}`}
+            >
+              <DynamicIcon name={detail.icon} className="w-7 h-7 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div
+                className={`text-xs font-semibold uppercase tracking-widest mb-2 ${
+                  isDark ? "text-emerald-400" : "text-emerald-600"
+                }`}
+              >
+                {category.title}
+              </div>
+              <h2
+                className={`text-2xl md:text-3xl font-bold tracking-tight leading-tight ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}
+              >
+                {detail.title}
+              </h2>
+            </div>
+            <button
+              onClick={onClose}
+              className={`p-2 rounded-lg transition-colors shrink-0 ${
+                isDark
+                  ? "hover:bg-white/10 text-gray-400"
+                  : "hover:bg-gray-100 text-gray-500"
+              }`}
+              aria-label={lang === "es" ? "Cerrar" : "Close"}
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        )}
 
         {/* Body */}
         <div className="p-6 md:p-8 overflow-y-auto flex-1 space-y-8">
@@ -309,7 +374,7 @@ export function DetailModal({ detail, category, isDark, lang, onClose }: DetailM
           }`}
         >
           <a
-            href="https://wa.me/56956249647?text=Hola,%20me%20interesa%20el%20agente%20de%20IA"
+            href="https://wa.me/56956249647?text=Hola,%20me%20interesa%20el%20servicio%20de%20IA"
             target="_blank"
             rel="noopener noreferrer"
             className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-bold text-base transition-all duration-300 hover:shadow-lg active:scale-[0.98] ${
@@ -318,7 +383,7 @@ export function DetailModal({ detail, category, isDark, lang, onClose }: DetailM
                 : "bg-gray-900 hover:bg-gray-800 text-white shadow-gray-900/20"
             }`}
           >
-            {lang === "es" ? "Quiero este agente" : "I want this agent"}
+            {lang === "es" ? "Quiero este servicio" : "I want this service"}
             <ArrowRight className="w-5 h-5" />
           </a>
         </div>

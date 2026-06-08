@@ -17,6 +17,18 @@ import {
   Settings,
   LineChart,
   Microscope,
+  Megaphone,
+  TrendingUp,
+  Sparkles,
+  Globe,
+  Layout,
+  Rocket,
+  Layers,
+  Code,
+  Puzzle,
+  Shield,
+  ShieldCheck,
+  Server,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +48,18 @@ const iconMap: Record<string, LucideIcon> = {
   Settings,
   LineChart,
   Microscope,
+  Megaphone,
+  TrendingUp,
+  Sparkles,
+  Globe,
+  Layout,
+  Rocket,
+  Layers,
+  Code,
+  Puzzle,
+  Shield,
+  ShieldCheck,
+  Server,
 };
 
 export function DynamicIcon({

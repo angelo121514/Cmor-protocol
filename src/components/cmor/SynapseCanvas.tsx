@@ -42,7 +42,10 @@ export default function SynapseCanvas({ isDark }: SynapseCanvasProps) {
 
     const getParticleCount = () => {
       const area = window.innerWidth * window.innerHeight;
-      return Math.min(Math.floor(area / 5500), 200);
+      const isMobile = window.innerWidth < 768;
+      return isMobile
+        ? Math.min(Math.floor(area / 4000), 150)
+        : Math.min(Math.floor(area / 3200), 350);
     };
 
     const cellKey = (cx: number, cy: number) => `${cx},${cy}`;
