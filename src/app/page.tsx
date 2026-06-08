@@ -100,7 +100,7 @@ export default function Home() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-3 min-h-20 flex items-center justify-between">
           {/* Logo */}
           <button
             onClick={() => {
@@ -117,7 +117,7 @@ export default function Home() {
               id="nav-logo"
               src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-16 md:h-20 w-auto transition-transform duration-700 ${
+              className={`h-48 md:h-60 w-auto transition-transform duration-700 ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
@@ -504,7 +504,7 @@ export default function Home() {
             <img
               src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-24 w-auto mb-3 ${
+              className={`h-72 w-auto mb-3 ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
