@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { TRANSLATIONS } from "@/lib/cmor-data";
 import type { ServiceCategory, SiteContent } from "@/lib/cmor-data";
 import SynapseCanvas from "@/components/cmor/SynapseCanvas";
+import AntigravityCanvas from "@/components/cmor/AntigravityCanvas";
 import { ServiceGrid, DetailModal } from "@/components/cmor/ServiceGrid";
 import { FAQSection } from "@/components/cmor/FAQSection";
 import { PrivacyModal } from "@/components/cmor/PrivacyModal";
@@ -17,9 +18,12 @@ import {
   Menu,
   X,
   ChevronRight,
+  Sparkles,
+  Network,
 } from "lucide-react";
 
 type Lang = "es" | "en";
+type ParticleMode = "synapse" | "antigravity";
 
 export default function Home() {
   const [isDark, setIsDark] = useState(false);
@@ -32,6 +36,7 @@ export default function Home() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [particleMode, setParticleMode] = useState<ParticleMode>("synapse");
 
   const content: SiteContent = TRANSLATIONS[lang];
 
@@ -79,7 +84,11 @@ export default function Home() {
         isDark ? "bg-[#0a0a0b] text-white" : "bg-[#fafafa] text-gray-900"
       }`}
     >
-      <SynapseCanvas isDark={isDark} />
+      {particleMode === "synapse" ? (
+        <SynapseCanvas isDark={isDark} />
+      ) : (
+        <AntigravityCanvas isDark={isDark} />
+      )}
 
       {/* --- NAV --- */}
       <nav
@@ -139,6 +148,32 @@ export default function Home() {
 
             <div className="w-px h-6 bg-gray-300 dark:bg-gray-700" />
 
+            {/* Particle Mode Toggle */}
+            <button
+              onClick={() => setParticleMode(particleMode === "synapse" ? "antigravity" : "synapse")}
+              className={`flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 ${
+                particleMode === "antigravity"
+                  ? isDark
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  : isDark
+                    ? "text-gray-400 hover:text-white hover:bg-white/5"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              }`}
+              aria-label="Toggle particle mode"
+              title={particleMode === "synapse" ? (lang === "es" ? "Enjambre" : "Swarm") : (lang === "es" ? "Sinapsis" : "Synapse")}
+            >
+              {particleMode === "synapse" ? (
+                <Network className="w-4 h-4" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+              {particleMode === "synapse"
+                ? (lang === "es" ? "Sinapsis" : "Synapse")
+                : (lang === "es" ? "Enjambre" : "Swarm")
+              }
+            </button>
+
             {/* Language */}
             <button
               onClick={() => setLang(lang === "es" ? "en" : "es")}
@@ -172,7 +207,24 @@ export default function Home() {
           </div>
 
           {/* Mobile menu toggle */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex md:hidden items-center gap-2">
+            {/* Particle toggle - mobile */}
+            <button
+              onClick={() => setParticleMode(particleMode === "synapse" ? "antigravity" : "synapse")}
+              className={`p-1.5 rounded transition-colors ${
+                particleMode === "antigravity"
+                  ? isDark ? "text-emerald-400" : "text-emerald-600"
+                  : isDark ? "text-gray-400" : "text-gray-600"
+              }`}
+              aria-label="Toggle particles"
+              title={particleMode === "synapse" ? (lang === "es" ? "Enjambre" : "Swarm") : (lang === "es" ? "Sinapsis" : "Synapse")}
+            >
+              {particleMode === "synapse" ? (
+                <Network className="w-4 h-4" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+            </button>
             <button
               onClick={() => setLang(lang === "es" ? "en" : "es")}
               className={`text-xs font-bold px-2 py-1 rounded ${

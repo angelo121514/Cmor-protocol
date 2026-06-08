@@ -66,3 +66,40 @@ Stage Summary:
 - Full architecture guide provided with all free tools
 - User asked to either start building or get step-by-step instructions
 - Awaiting user decision on next step
+---
+Task ID: 1
+Agent: Super Z (main)
+Task: Add Antigravity-style particle mode (swarm) with toggle to switch between Synapse and Antigravity modes
+
+Work Log:
+- Analyzed antigravity.google using web-reader and agent-browser: uses WebGL canvas with colorful particle swarm (attract to mouse, repel when close), organic wandering, 4 canvas elements
+- Created `/home/z/my-project/src/components/cmor/AntigravityCanvas.tsx` — new particle system with:
+  - Swarm behavior: particles ATTRACT toward mouse cursor (opposite of Synapse's repulsion)
+  - Repel when too close (< 50px) to prevent clumping
+  - Colorful CMOR palette: 8 colors (emerald-400/300, teal-400/300, cyan-400/300, lime-400, green-400) for dark mode, deeper variants for light
+  - Glow/bloom effect: radial gradient per particle with bright core
+  - Organic wandering: sinusoidal oscillation around home positions
+  - Subtle connection lines between nearby particles (fainter than Synapse)
+  - Touch support for mobile
+  - Same particle counts: Desktop 250, Mobile 90, density 1/4500px²
+- Modified `/home/z/my-project/src/app/page.tsx`:
+  - Added `particleMode` state ("synapse" | "antigravity")
+  - Conditional rendering of SynapseCanvas or AntigravityCanvas
+  - Desktop: added toggle button with Network/Sparkles icons + "Sinapsis"/"Enjambre" labels
+  - Mobile: compact toggle button in header
+  - Active mode gets highlighted style (emerald border/bg)
+  - Labels adapt to language (ES/EN)
+- Fixed `next.config.ts`: added `allowedDevOrigins` to prevent cross-origin warnings
+- Verified with Agent Browser:
+  - Synapse mode: works ✅
+  - Antigravity mode: works ✅
+  - Toggle between modes: works ✅
+  - Dark mode + Antigravity: works ✅
+  - Dark mode + Synapse: works ✅
+  - No console errors ✅
+  - No runtime errors ✅
+
+Stage Summary:
+- Two particle modes now available: "Sinapsis" (Synapse - network/connections) and "Enjambre" (Antigravity/Swarm - colorful attract)
+- Toggle button in navbar with visual feedback
+- Screenshots saved to /home/z/my-project/download/
