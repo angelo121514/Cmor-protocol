@@ -103,16 +103,36 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="transition-opacity hover:opacity-80"
+            onClick={() => {
+              const logo = document.getElementById("nav-logo");
+              if (logo) {
+                logo.classList.add("logo-spin");
+                setTimeout(() => logo.classList.remove("logo-spin"), 800);
+              }
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="relative overflow-hidden"
           >
             <img
+              id="nav-logo"
               src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-16 md:h-20 w-auto ${
+              className={`h-16 md:h-20 w-auto transition-transform duration-700 ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
+            <style jsx>{`
+              @keyframes logoSpin {
+                0% { transform: scale(1) rotate(0deg); }
+                25% { transform: scale(0.85) rotate(-15deg); }
+                50% { transform: scale(1.1) rotate(360deg); }
+                75% { transform: scale(0.95) rotate(370deg); }
+                100% { transform: scale(1) rotate(360deg); }
+              }
+              .logo-spin {
+                animation: logoSpin 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+              }
+            `}</style>
           </button>
 
           {/* Desktop nav */}
