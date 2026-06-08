@@ -85,6 +85,10 @@ interface Particle {
   seed: number;
   seed2: number;
   lifeEnd: number;
+  orbitAngle: number;  // angle on the ring around mouse
+  orbitRadius: number; // distance from mouse center on the ring
+  vx: number;      // velocity x for smoother movement
+  vy: number;      // velocity y for smoother movement
 }
 
 export default function AntigravityCanvas({ isDark }: AntigravityCanvasProps) {
@@ -134,6 +138,10 @@ export default function AntigravityCanvas({ isDark }: AntigravityCanvasProps) {
         const seed2 = Math.random();
         const lifeEnd = 3 + Math.sin(seed2 * 100) * 1; // from shader
 
+        // Each particle has a unique orbit angle and radius around the mouse
+        const orbitAngle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+        const orbitRadius = 0.04 + Math.random() * 0.08; // ring radius in normalized space
+
         particlesRef.current.push({
           x: rx,
           y: ry,
@@ -146,6 +154,10 @@ export default function AntigravityCanvas({ isDark }: AntigravityCanvasProps) {
           seed,
           seed2,
           lifeEnd,
+          orbitAngle,
+          orbitRadius,
+          vx: 0,
+          vy: 0,
         });
       }
     };
@@ -169,13 +181,17 @@ export default function AntigravityCanvas({ isDark }: AntigravityCanvasProps) {
       const mouse = mouseRef.current;
       const colors = isDark ? CMOR_DARK : CMOR_LIGHT;
 
-      // Smooth hover progress (like uIsHovering in shader)
+      // Smooth hover progress (slower transition for graceful feel)
       const targetHover = mouse.active ? 1 : 0;
-      hoverProgressRef.current += (targetHover - hoverProgressRef.current) * 0.05;
+      hoverProgressRef.current += (targetHover - hoverProgressRef.current) * 0.025;
       const isHovering = hoverProgressRef.current;
 
-      // === SIMULATION PASS (replicating the sim fragment shader exactly) ===
-      const distRadius = 0.15; // from shader: float distRadius = 0.15
+      // === SIMULATION PASS — Swarm that accumulates in a circle around mouse ===
+      const distRadius = 0.35; // wider attraction range for a broader swarm
+      const SWARM_SPEED = 0.004;   // base movement speed (slower)
+      const ATTRACT_STRENGTH = 0.006; // how strongly particles converge to target
+      const DAMPING = 0.92;          // velocity damping for smooth deceleration
+      const ORBIT_SPEED = 0.3;       // tangential orbit speed around mouse
 
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
@@ -183,65 +199,79 @@ export default function AntigravityCanvas({ isDark }: AntigravityCanvasProps) {
         // Life time calculation (exact shader logic)
         const lifeTime = ((p.seed * 100) + timeHalf) % p.lifeEnd;
 
+        // Slowly rotate orbit angle so particles orbit around mouse
+        p.orbitAngle += ORBIT_SPEED * dt * (0.5 + p.seed * 0.5);
+
+        // Calculate target: when hovering, target is a ring position around the mouse
+        // When not hovering, target is the home position
+        if (mouse.active) {
+          // Ring target: mouse position + orbit offset
+          const ringX = mouse.x + Math.cos(p.orbitAngle) * p.orbitRadius;
+          const ringY = mouse.y + Math.sin(p.orbitAngle) * p.orbitRadius;
+          // Smoothly move nearest toward ring position
+          p.nearestX += (ringX - p.nearestX) * 0.015;
+          p.nearestY += (ringY - p.nearestY) * 0.015;
+        } else {
+          // Slowly return nearest to ref position
+          p.nearestX += (p.refX - p.nearestX) * 0.008;
+          p.nearestY += (p.refY - p.nearestY) * 0.008;
+        }
+
         // Target position: mix between refPos and nearestPos based on hovering
-        // vec2 targetPos = refPos; targetPos = mix(targetPos, nearestPos, uIsHovering * uIsHovering);
-        const hoverMix = isHovering * isHovering; // quadratic like shader
+        const hoverMix = isHovering * isHovering;
         const targetX = p.refX + (p.nearestX - p.refX) * hoverMix;
         const targetY = p.refY + (p.nearestY - p.refY) * hoverMix;
 
-        // Direction toward target (shader: vec2 direction = normalize(targetPos - pos); direction *= .01;)
+        // Direction toward target
         const dx = targetX - p.x;
         const dy = targetY - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const dirX = dist > 0.0001 ? (dx / dist) * 0.01 : 0;
-        const dirY = dist > 0.0001 ? (dy / dist) * 0.01 : 0;
 
-        // distStrength = smoothstep(distRadius, 0., dist)
-        const t1 = (distRadius - dist) / distRadius;
-        const distStrength = Math.max(0, Math.min(1, t1 * t1 * (3 - 2 * t1)));
+        // Attraction force — stronger when farther, accumulates at pointer
+        const attractForce = Math.min(dist * ATTRACT_STRENGTH, 0.003);
+        const nx = dist > 0.0001 ? dx / dist : 0;
+        const ny = dist > 0.0001 ? dy / dist : 0;
 
-        // Update position
-        if (dist > 0.005) {
-          p.x += dirX * distStrength;
-          p.y += dirY * distStrength;
+        // Add attraction acceleration to velocity
+        p.vx += nx * attractForce;
+        p.vy += ny * attractForce;
+
+        // Add slight tangential force when near mouse for swirling effect
+        if (dist < p.orbitRadius * 3 && mouse.active) {
+          const tangentForce = 0.0005 * isHovering;
+          p.vx += -ny * tangentForce;
+          p.vy += nx * tangentForce;
         }
 
-        // Reset on life start (shader: if(lifeTime < .01) { pos = refPos; scale = 0; })
+        // Apply damping
+        p.vx *= DAMPING;
+        p.vy *= DAMPING;
+
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Reset on life start
         if (lifeTime < 0.01) {
           p.x = p.refX;
           p.y = p.refY;
           p.scale = 0;
+          p.vx = 0;
+          p.vy = 0;
         }
 
-        // Scale animation (exact shader logic)
-        // targetScale = smoothstep(.01, 0.5, lifeTime) - smoothstep(0.5, 1., lifeTime/lifeEnd)
+        // Scale animation
         let targetScale = smoothstep(0.01, 0.5, lifeTime) - smoothstep(0.5, 1, lifeTime / p.lifeEnd);
-        // targetScale += smoothstep(0.1, 0., smoothstep(0.001, .1, dist)) * 1.5 * uIsHovering
         const nearDist = smoothstep(0.001, 0.1, dist);
         targetScale += smoothstep(0.1, 0, nearDist) * 1.5 * isHovering;
 
-        // Scale easing (shader: scaleDiff *= .1; scale += scaleDiff)
-        const scaleDiff = (targetScale - p.scale) * 0.1;
+        // Scale easing — slower for smoother feel
+        const scaleDiff = (targetScale - p.scale) * 0.06;
         p.scale += scaleDiff;
 
-        // Velocity = how close to target * hover (shader: velocity = smoothstep(distRadius, .001, dist) * uIsHovering)
-        p.velocity = smoothstep(distRadius, 0.001, dist) * isHovering;
-
-        // Final position with diff smoothing (shader: diff = finalPos - pFrame.xy; diff *= .2)
-        const diffX = (p.x - (p.x - dirX * distStrength)) * 0.2;
-        const diffY = (p.y - (p.y - dirY * distStrength)) * 0.2;
-
-        // Update nearest positions toward mouse (the "swarm follow" behavior)
-        if (mouse.active) {
-          // Particles' nearest target moves toward mouse position
-          const attractSpeed = 0.03;
-          p.nearestX += (mouse.x - p.nearestX) * attractSpeed;
-          p.nearestY += (mouse.y - p.nearestY) * attractSpeed;
-        } else {
-          // Slowly return nearest to ref position
-          p.nearestX += (p.refX - p.nearestX) * 0.01;
-          p.nearestY += (p.refY - p.nearestY) * 0.01;
-        }
+        // Velocity metric for color = speed of movement * hover
+        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        p.velocity = Math.min(1, speed * 80) * isHovering;
       }
 
       // === RENDER PASS (replicating the render fragment shader) ===
