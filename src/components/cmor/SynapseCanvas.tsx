@@ -30,7 +30,7 @@ export default function SynapseCanvas({ isDark }: SynapseCanvasProps) {
 
     const CONNECTION_DIST = 140;
     const MOUSE_RADIUS = 200;
-    const MOUSE_FORCE = 0.5;       // Gentler repulsion (was 2.2)
+    const MOUSE_FORCE = 1.1;       // Moderate repulsion
     const RETURN_FORCE = 0.008;     // Gentle pull back toward home position
     const BASE_SPEED = 0.35;
     const CELL_SIZE = CONNECTION_DIST;
@@ -48,8 +48,8 @@ export default function SynapseCanvas({ isDark }: SynapseCanvasProps) {
       const area = window.innerWidth * window.innerHeight;
       const isMobile = window.innerWidth < 768;
       return isMobile
-        ? Math.min(Math.floor(area / 2800), 220)
-        : Math.min(Math.floor(area / 2200), 500);
+        ? Math.min(Math.floor(area / 4500), 90)
+        : Math.min(Math.floor(area / 4500), 250);
     };
 
     const cellKey = (cx: number, cy: number) => `${cx},${cy}`;
