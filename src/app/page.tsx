@@ -104,13 +104,15 @@ export default function Home() {
           {/* Logo */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className={`text-xl font-black tracking-tighter transition-colors ${
-              isDark
-                ? "text-white hover:text-emerald-400"
-                : "text-gray-900 hover:text-emerald-600"
-            }`}
+            className="transition-opacity hover:opacity-80"
           >
-            CMOR<span className="text-emerald-500">.</span>
+            <img
+              src="/logo.svg"
+              alt="CMOR Protocol"
+              className={`h-10 w-auto ${
+                isDark ? "brightness-0 invert" : ""
+              }`}
+            />
           </button>
 
           {/* Desktop nav */}
@@ -479,9 +481,13 @@ export default function Home() {
       >
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
-            <div className="text-xl font-black tracking-tighter mb-1">
-              CMOR<span className="text-emerald-500">.</span>
-            </div>
+            <img
+              src="/logo.svg"
+              alt="CMOR Protocol"
+              className={`h-12 w-auto mb-2 ${
+                isDark ? "brightness-0 invert" : ""
+              }`}
+            />
             <p
               className={`text-sm ${
                 isDark ? "text-gray-500" : "text-gray-400"
