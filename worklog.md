@@ -142,3 +142,39 @@ Stage Summary:
   - Particles rotate to face mouse
   - Velocity modulates brightness
   - No connection lines between particles
+
+---
+Task ID: 3
+Agent: Super Z (main)
+Task: Clone exact antigravity.google particle effect
+
+Work Log:
+- Downloaded and decompressed the actual antigravity.google main JS bundle (1.77MB)
+- Extracted and analyzed the EXACT shader code:
+  - Simulation fragment shader: position update logic with distRadius, smoothstep, lifeTime, scale animation
+  - Render fragment shader: sdRoundBox for pill shape, 3-color mixing with velocity, rotation toward mouse
+  - Vertex shader: point size calculation, noise displacement
+- Found exact default colors:
+  - Dark: #318bf7 (blue), #bada4c (yellow-green), #e35058 (red-coral)
+  - Light: #2c64ed (blue), #f84242 (red), #ffcf03 (yellow)
+- Used CMOR brand colors instead: emerald/cyan/lime
+- Rewrote AntigravityCanvas.tsx to replicate the EXACT shader logic:
+  1. Simulation pass: exact same position update with distRadius=0.15, smoothstep, direction*=0.01
+  2. Life time system: lifeEnd = 3 + sin(seed2 * 100) * 1, reset on lifeTime < 0.01
+  3. Scale animation: smoothstep fade in/out + hover boost * 1.5
+  4. Velocity: smoothstep(distRadius, 0.001, dist) * isHovering
+  5. Hover progress: quadratic mix like shader (isHovering * isHovering)
+  6. Render: sdRoundBox pill shape with exact same proportions (0.5, 0.2, 0.25)
+  7. Point size: (scale * 7) * (pixelRatio * 0.5) * particleScale + minScale
+  8. Rotation: atan2 toward mouse position
+  9. Color: 3-color mix with h=0.8 divider, velocity as progress
+  10. Alpha: baseAlpha * smoothstep(0.1, 0.2, scale)
+- Normalized coordinate space (0-1) matching shader's GL space
+- Device pixel ratio support for sharp rendering
+- Verified with Agent Browser: no errors, both light and dark modes work
+
+Stage Summary:
+- AntigravityCanvas now uses the EXACT same physics/visual logic as antigravity.google's shaders
+- Simulation replicates: position update, scale animation, velocity, life cycle, hover mixing
+- Rendering replicates: sdRoundBox pill shape, 3-color gradient, rotation toward mouse, point sizing
+- Uses CMOR brand colors (emerald/cyan/lime) instead of Google's blue/yellow/red
