@@ -107,9 +107,9 @@ export default function Home() {
             className="transition-opacity hover:opacity-80"
           >
             <img
-              src="/logo.svg"
+              src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-10 w-auto ${
+              className={`h-12 md:h-14 w-auto ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
@@ -482,9 +482,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <img
-              src="/logo.svg"
+              src="/logo-full.png"
               alt="CMOR Protocol"
-              className={`h-12 w-auto mb-2 ${
+              className={`h-16 w-auto mb-2 ${
                 isDark ? "brightness-0 invert" : ""
               }`}
             />
